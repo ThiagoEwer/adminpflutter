@@ -1,4 +1,10 @@
+// ignore_for_file: use_build_context_synchronously, unused_local_variable
+
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'adminpainel.dart';
+import 'cadastropage.dart';
+import 'dashboard.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
@@ -8,9 +14,52 @@ class LoginPage extends StatefulWidget {
 }
 
 class LoginPageState extends State<LoginPage> {
+  final FirebaseAuth _auth = FirebaseAuth.instance;
   final _formKey = GlobalKey<FormState>();
+
   late String _email;
-  late String _password;
+  late String _senha;
+  String _errorMessage = '';
+
+  void popUpNaofuncional(BuildContext context) {
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        title: const Text('Função Indisponível'),
+        content: const Text('Função ainda inexistente no sistema'),
+        actions: <Widget>[
+          ElevatedButton(
+            child: const Text('Fechar'),
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+          ),
+        ],
+      );
+    },
+  );
+}
+
+  void popUpEsqueciSenha(BuildContext context) {
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        title: const Text('Esqueci a Senha'),
+        content: const Text('Entre em contato com os administradores do sistema.'),
+        actions: <Widget>[
+          ElevatedButton(
+            child: const Text('Fechar'),
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+          ),
+        ],
+      );
+    },
+  );
+}
 
   @override
   Widget build(BuildContext context) {
@@ -97,15 +146,44 @@ class LoginPageState extends State<LoginPage> {
                             },
                             onChanged: (value) {
                               setState(() {
-                                _password = value;
+                                _senha = value;
                               });
                             },
                           ),
-                          const SizedBox(height: 30),
+                          Text(
+                            _errorMessage,
+                            style: const TextStyle(
+                              color: Colors.red,
+                            ),
+                          ),
+                          const SizedBox(height: 2),
                           ElevatedButton(
-                            onPressed: () {
+                            onPressed: () async {
                               if (_formKey.currentState!.validate()) {
-                                // Implement login functionality
+                                try {
+                                  UserCredential userCredential =
+                                      await _auth.signInWithEmailAndPassword(
+                                    email: _email,
+                                    password: _senha,
+                                  );
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            DashboardPage(userName: _email)
+                                            ),
+                                  );
+                                } on FirebaseAuthException catch (e) {
+                                  if (e.code == 'user-not-found') {
+                                    setState(() {
+                                      _errorMessage = 'Usuário não encontrado.';
+                                    });
+                                  } else if (e.code == 'wrong-password') {
+                                    setState(() {
+                                      _errorMessage = 'Senha incorreta.';
+                                    });
+                                  }
+                                }
                               }
                             },
                             style: ButtonStyle(
@@ -118,19 +196,14 @@ class LoginPageState extends State<LoginPage> {
                           ),
                           Column(
                             children: [
-                              const Text(
-                                'Ou entre com',
-                                style: TextStyle(
-                                  color: Colors.white,
-                                ),
-                              ),
                               const SizedBox(height: 10),
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
                                   ElevatedButton.icon(
                                     onPressed: () {
-                                      // Implement login with Google functionality
+                                      // Implement login com Google
+                                      popUpNaofuncional(context);
                                     },
                                     icon: const Icon(Icons.mail_outline),
                                     label: const Text('Gmail'),
@@ -146,14 +219,15 @@ class LoginPageState extends State<LoginPage> {
                                   const SizedBox(width: 10),
                                   ElevatedButton.icon(
                                     onPressed: () {
-                                      // Implement login with GitHub functionality
+                                      // Implement login com github
+                                      popUpNaofuncional(context);
                                     },
-                                    icon: const Icon(Icons.code_outlined),
-                                    label: const Text('GitHub'),
+                                    icon: const Icon(Icons.mail),
+                                    label: const Text('Outlook'),
                                     style: ButtonStyle(
                                       backgroundColor:
                                           MaterialStateProperty.all(
-                                              Colors.grey.shade800),
+                                              const Color.fromARGB(255, 7, 47, 248)),
                                       padding: MaterialStateProperty.all(
                                           const EdgeInsets.symmetric(
                                               vertical: 15)),
@@ -162,16 +236,37 @@ class LoginPageState extends State<LoginPage> {
                                 ],
                               ),
                               const SizedBox(height: 10),
-                              TextButton(
-                                onPressed: () {
-                                  // Implement forgot password functionality
-                                },
-                                child: const Text(
-                                  'Esqueceu a senha?',
-                                  style: TextStyle(
-                                    color: Colors.blue,
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  TextButton(
+                                    onPressed: () {
+                                      popUpEsqueciSenha(context);
+                                      // Implement forgot password functionality
+                                    },
+                                    child: const Text(
+                                      'Esqueceu a senha?',
+                                      style: TextStyle(
+                                        color: Colors.blue,
+                                      ),
+                                    ),
                                   ),
-                                ),
+                                  const SizedBox(height: 20),
+                                  TextButton(
+                                    onPressed: () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                const CadastroPage()),
+                                      );
+                                    },
+                                    child: const Text('Cadastre-se',
+                                    style: TextStyle(
+                                      color: Colors.blue
+                                    ),),
+                                  ),
+                                ],
                               ),
                             ],
                           ),
