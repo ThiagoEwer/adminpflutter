@@ -1,7 +1,5 @@
 // ignore_for_file: use_build_context_synchronously, unused_local_variable
 
-import 'package:adminpflutter/website/test/adminpanelpage.dart';
-import 'package:adminpflutter/website/test/datascreen.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'cadastropage.dart';

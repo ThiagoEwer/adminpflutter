@@ -1,7 +1,7 @@
 // ignore_for_file: library_private_types_in_public_api
 
 import 'package:firebase_database/firebase_database.dart';
-import 'user.dart';
+import 'us3r.dart';
 import 'package:flutter/material.dart';
 
 class AdminPanelPage extends StatefulWidget {
