@@ -3,19 +3,42 @@
 import 'package:adminpflutter/website/crud/models/user.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-
 import '../provider/users.dart';
 
-class UserForm extends StatelessWidget {
-   UserForm({super.key});
+class UserForm extends StatefulWidget {
+  const UserForm({super.key});
 
+  @override
+  State<UserForm> createState() => _UserFormState();
+}
+
+class _UserFormState extends State<UserForm> {
   final _form = GlobalKey<FormState>();
+
   final Map<String, String> _formData = {};
+
+  void _loadFormData(User? user) {
+    if (user != null) {
+      _formData['id'] = user.id;
+      _formData['name'] = user.name;
+      _formData['email'] = user.email;
+      _formData['empresa'] = user.empresa;
+      _formData['avatarUrl'] = user.avatarUrl;
+      _formData['apiUrl'] = user.apiUrl;
+    }
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final User? user = ModalRoute.of(context)?.settings.arguments as User?;
+    if (user != null) {
+      _loadFormData(user);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-
-
     return Scaffold(
       appBar: AppBar(
         title: const Text('Formulário de usuário'),
@@ -29,12 +52,12 @@ class UserForm extends StatelessWidget {
 
                 Provider.of<Users>(context, listen: false).put(
                   User(
-                      id: _formData['id']?? '',
-                      name: _formData['name']?? '',
-                      email: _formData['email']?? '',
-                      empresa: _formData['empresa']?? '',
-                      avatarUrl: _formData['avatarUrl']?? '',
-                      apiUrl: _formData['apiUrl']?? ''),
+                      id: _formData['id'] ?? '',
+                      name: _formData['name'] ?? '',
+                      email: _formData['email'] ?? '',
+                      empresa: _formData['empresa'] ?? '',
+                      avatarUrl: _formData['avatarUrl'] ?? '',
+                      apiUrl: _formData['apiUrl'] ?? ''),
                 );
 
                 Navigator.of(context).pop();
@@ -50,6 +73,7 @@ class UserForm extends StatelessWidget {
             child: Column(
               children: [
                 TextFormField(
+                  initialValue: _formData['name'],
                   decoration: const InputDecoration(labelText: 'Nome'),
                   validator: (value) {
                     if (value == null || value.trim().isEmpty) {
@@ -63,15 +87,19 @@ class UserForm extends StatelessWidget {
                   onSaved: (value) => _formData['name'] = value!,
                 ),
                 TextFormField(
+                    initialValue: _formData['email'],
                     decoration: const InputDecoration(labelText: 'Email'),
                     onSaved: (value) => _formData['email'] = value!),
                 TextFormField(
+                    initialValue: _formData['empresa'],
                     decoration: const InputDecoration(labelText: 'Empresa'),
                     onSaved: (value) => _formData['empresa'] = value!),
                 TextFormField(
+                    initialValue: _formData['avatarUrl'],
                     decoration: const InputDecoration(labelText: 'URL Avatar'),
                     onSaved: (value) => _formData['avatarUrl'] = value!),
                 TextFormField(
+                    initialValue: _formData['apiUrl'],
                     decoration: const InputDecoration(labelText: 'API'),
                     onSaved: (value) => _formData['apiUrl'] = value!),
               ],

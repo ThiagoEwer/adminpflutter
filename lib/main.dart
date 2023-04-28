@@ -32,7 +32,7 @@ class AdminPainelFlutter extends StatelessWidget {
      // home: const UserList(),
         routes: {
           AppRoutes.HOME:(context) => const UserList(),
-          AppRoutes.USER_FORM:(context) => UserForm()
+          AppRoutes.USER_FORM:(context) => const UserForm()
         }
       ),
     );
