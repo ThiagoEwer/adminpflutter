@@ -4,14 +4,34 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../provider/users.dart';
 
-class UserList extends StatelessWidget {
+class UserList extends StatefulWidget {
   const UserList({super.key});
 
   @override
+  State<UserList> createState() => _UserListState();
+}
+
+class _UserListState extends State<UserList> {
+   late Users users;
+//  final Users users = Provider.of<Users>(context);
+
+  @override
+  void initState() {
+    super.initState();
+    users = Provider.of<Users>(context, listen: false);
+    fetchUsers();
+  }
+
+  Future<void> fetchUsers() async {
+    await users.fetch();
+    setState(() {});
+  }
+
+  
+  @override
   Widget build(BuildContext context) {
     //foi colocado dentro do build para ser "consultado" posteriormente pelo o listviewbuilder.
-    final Users users = Provider.of<Users>(context);
-
+  //  final Users users = Provider.of<Users>(context);
     return Scaffold(
       appBar: AppBar(
         title: const Text('Usuários Homologados'),
@@ -25,11 +45,12 @@ class UserList extends StatelessWidget {
               icon: const Icon(Icons.add))
         ],
       ),
-      body: ListView.builder(
+      body:
+       ListView.builder(
         //usado para mostrar os usuários do map user, nesse caso só objeto name.
         itemBuilder: (context, i) => Usertile(users.byIndex(i)),
         itemCount: users.count,
-      ),
+      ), 
     );
   }
 }

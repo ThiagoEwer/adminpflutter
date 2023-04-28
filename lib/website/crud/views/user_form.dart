@@ -1,4 +1,4 @@
-// ignore_for_file: no_leading_underscores_for_local_identifiers
+// ignore_for_file: no_leading_underscores_for_local_identifiers, use_build_context_synchronously
 
 import 'package:adminpflutter/website/crud/models/user.dart';
 import 'package:flutter/material.dart';
@@ -14,6 +14,7 @@ class UserForm extends StatefulWidget {
 
 class _UserFormState extends State<UserForm> {
   final _form = GlobalKey<FormState>();
+  bool _isLoading = false;
 
   final Map<String, String> _formData = {};
 
@@ -46,11 +47,15 @@ class _UserFormState extends State<UserForm> {
           IconButton(
             icon: const Icon(Icons.save),
             //se o formulário for validado, vai salvar e chamar o pop(retornar a tela inicial)
-            onPressed: () {
+            onPressed: () async {
               if (_form.currentState?.validate() == true) {
                 _form.currentState?.save();
 
-                Provider.of<Users>(context, listen: false).put(
+                setState(() {
+                  _isLoading = true;
+                });
+
+                await Provider.of<Users>(context, listen: false).put(
                   User(
                       id: _formData['id'] ?? '',
                       name: _formData['name'] ?? '',
@@ -60,51 +65,63 @@ class _UserFormState extends State<UserForm> {
                       apiUrl: _formData['apiUrl'] ?? ''),
                 );
 
+                setState(() {
+                  setState(() {
+                    _isLoading = false;
+                  });
+                });
+
                 Navigator.of(context).pop();
               }
             },
           )
         ],
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(15),
-        child: Form(
-            key: _form,
-            child: Column(
-              children: [
-                TextFormField(
-                  initialValue: _formData['name'],
-                  decoration: const InputDecoration(labelText: 'Nome'),
-                  validator: (value) {
-                    if (value == null || value.trim().isEmpty) {
-                      return 'Nome inválido';
-                    }
-                    if (value.trim().length < 3) {
-                      return 'Mínimo 3 letras.';
-                    }
-                    return null;
-                  },
-                  onSaved: (value) => _formData['name'] = value!,
-                ),
-                TextFormField(
-                    initialValue: _formData['email'],
-                    decoration: const InputDecoration(labelText: 'Email'),
-                    onSaved: (value) => _formData['email'] = value!),
-                TextFormField(
-                    initialValue: _formData['empresa'],
-                    decoration: const InputDecoration(labelText: 'Empresa'),
-                    onSaved: (value) => _formData['empresa'] = value!),
-                TextFormField(
-                    initialValue: _formData['avatarUrl'],
-                    decoration: const InputDecoration(labelText: 'URL Avatar'),
-                    onSaved: (value) => _formData['avatarUrl'] = value!),
-                TextFormField(
-                    initialValue: _formData['apiUrl'],
-                    decoration: const InputDecoration(labelText: 'API'),
-                    onSaved: (value) => _formData['apiUrl'] = value!),
-              ],
-            )),
-      ),
+      body: _isLoading
+          ? const Center(
+            child: CircularProgressIndicator(),
+          )
+          : Padding(
+              padding: const EdgeInsets.all(15),
+              child: Form(
+                  key: _form,
+                  child: Column(
+                    children: [
+                      TextFormField(
+                        initialValue: _formData['name'],
+                        decoration: const InputDecoration(labelText: 'Nome'),
+                        validator: (value) {
+                          if (value == null || value.trim().isEmpty) {
+                            return 'Nome inválido';
+                          }
+                          if (value.trim().length < 3) {
+                            return 'Mínimo 3 letras.';
+                          }
+                          return null;
+                        },
+                        onSaved: (value) => _formData['name'] = value!,
+                      ),
+                      TextFormField(
+                          initialValue: _formData['email'],
+                          decoration: const InputDecoration(labelText: 'Email'),
+                          onSaved: (value) => _formData['email'] = value!),
+                      TextFormField(
+                          initialValue: _formData['empresa'],
+                          decoration:
+                              const InputDecoration(labelText: 'Empresa'),
+                          onSaved: (value) => _formData['empresa'] = value!),
+                      TextFormField(
+                          initialValue: _formData['avatarUrl'],
+                          decoration:
+                              const InputDecoration(labelText: 'URL Avatar'),
+                          onSaved: (value) => _formData['avatarUrl'] = value!),
+                      TextFormField(
+                          initialValue: _formData['apiUrl'],
+                          decoration: const InputDecoration(labelText: 'API'),
+                          onSaved: (value) => _formData['apiUrl'] = value!),
+                    ],
+                  )),
+            ),
     );
   }
 }

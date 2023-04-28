@@ -33,6 +33,7 @@ class AdminPainelFlutter extends StatelessWidget {
         routes: {
           AppRoutes.HOME:(context) => const UserList(),
           AppRoutes.USER_FORM:(context) => const UserForm()
+     //     AppRoutes.USER_DETAILS: (_) => UserDetails(),
         }
       ),
     );
@@ -46,3 +47,9 @@ class AdminPainelFlutter extends StatelessWidget {
 // verificar video de conexão com real time DB
 // se não der certo, verificar com FireStore DB
 //Se não funcionar, usa o Firebase apenas para loggin e procura outro backend pra fazer
+
+//------SOBRE O LOGGIN PAGE -------
+//retirar o change notifier e deixar nativo para funcionar como era antes.
+//no caso, para ter o login page com firebase funcionadl e ignorar tudo da pasta CRUD
+//--------------------------------
+
