@@ -1,8 +1,5 @@
 // ignore_for_file: unnecessary_null_comparison
-
 import 'dart:convert';
-import 'dart:math';
-
 import 'package:adminpflutter/website/crud/data/dammy_users.dart';
 import 'package:flutter/material.dart';
 import '../models/user.dart';
@@ -10,7 +7,6 @@ import 'package:http/http.dart' as http;
 
 class Users with ChangeNotifier {
   static const _baseUrl = 'https://adminpainelg-default-rtdb.firebaseio.com/';
-
   final Map<String, User> _items = {...DUMMY_USERS};
 
   List<User> get all {
@@ -24,6 +20,7 @@ class Users with ChangeNotifier {
   User byIndex(int i) {
     return _items.values.elementAt(i);
   }
+
 //usado para ler os registros do firebase.
   Future<void> fetch() async {
     final response = await http.get(Uri.parse("$_baseUrl/users.json"));
@@ -58,81 +55,60 @@ class Users with ChangeNotifier {
     if (user.id != null &&
         user.id.trim().isNotEmpty &&
         _items.containsKey(user.id)) {
-          //await para com patch para alterar os registros no firebase.
-          await http.patch(
-            Uri.parse("$_baseUrl/users/${user.id}.json"),
-              body: json.encode({
-                'name': user.name,
-                'email': user.email,
-                'empresa': user.empresa,
-                'avatarUrl': user.avatarUrl,
-                'apiUrl': user.apiUrl
-              }));
-
-      _items.update(
-          user.id,
-          (_) => User(
-                id: user.id,
-                name: user.name,
-                email: user.email,
-                empresa: user.empresa,
-                avatarUrl: user.avatarUrl,
-                apiUrl: user.apiUrl,
-              ),
-            );
-    } else {
-
-      //post para enviar os registros ao firebase.
-      final response = await http.post(
-        Uri.parse("$_baseUrl/users.json"),
+      //await para com patch para alterar os registros no firebase.
+      await http.patch(Uri.parse("$_baseUrl/users/${user.id}.json"),
           body: json.encode({
             'name': user.name,
             'email': user.email,
             'empresa': user.empresa,
             'avatarUrl': user.avatarUrl,
             'apiUrl': user.apiUrl
-          }),
-          );
+          }));
+
+      _items.update(
+        user.id,
+        (_) => User(
+          id: user.id,
+          name: user.name,
+          email: user.email,
+          empresa: user.empresa,
+          avatarUrl: user.avatarUrl,
+          apiUrl: user.apiUrl,
+        ),
+      );
+    } else {
+      //post para enviar os registros ao firebase.
+      final response = await http.post(
+        Uri.parse("$_baseUrl/users.json"),
+        body: json.encode({
+          'name': user.name,
+          'email': user.email,
+          'empresa': user.empresa,
+          'avatarUrl': user.avatarUrl,
+          'apiUrl': user.apiUrl
+        }),
+      );
 
       //recebendo Id do firebase
       final id = json.decode(response.body)['name'];
-
-      // ------ CREATE---------// adicionar
-
-      //adicionando ID de forma randomica
-      //final id = Random().nextDouble().toString();
-
       _items.putIfAbsent(
-          id,
-          () => User(
-              id: id,
-              name: user.name,
-              email: user.email,
-              empresa: user.empresa,
-              avatarUrl: user.avatarUrl,
-              apiUrl: user.apiUrl));
-
-      // ------ CREATE---------//
+        id,
+        () => User(
+            id: id,
+            name: user.name,
+            email: user.email,
+            empresa: user.empresa,
+            avatarUrl: user.avatarUrl,
+            apiUrl: user.apiUrl),
+      );
     }
-
-    //ou alterar(um existente)
-
-//nofityListerners é avisado que houve uma mundança e assim, ele altera a Interface Gráfica.
     notifyListeners();
   }
 
-  // ------ REMOVE---------//
-/*
-  void remove(User user) {
+ //excluir os registros
+  Future<void> removeItem(User user) async {
     if (user != null && user.id != null) {
-      _items.remove(user.id);
-      notifyListeners();
-    }
-  }
-*/
-   Future<void> removeItem(User user) async {
-    if (user != null && user.id != null) {
-      final response = await http.delete(Uri.parse("$_baseUrl/users/${user.id}.json"));
+          await http.delete(Uri.parse("$_baseUrl/users/${user.id}.json"));
       _items.remove(user.id);
       notifyListeners();
     }

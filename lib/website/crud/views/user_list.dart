@@ -26,7 +26,12 @@ class _UserListState extends State<UserList> {
     await users.fetch();
     setState(() {});
   }
-
+//atualiza a tela sempre que há uma alteração de registro ou inclusão/exclusão
+ @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    users = Provider.of<Users>(context);
+  }
   
   @override
   Widget build(BuildContext context) {
