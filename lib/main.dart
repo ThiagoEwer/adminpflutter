@@ -2,6 +2,7 @@ import 'package:adminpflutter/website/config/firebase_options.dart';
 import 'package:adminpflutter/website/crud/provider/users.dart';
 import 'package:adminpflutter/website/crud/views/user_form.dart';
 import 'package:adminpflutter/website/crud/views/user_list.dart';
+import 'package:adminpflutter/website/security/loginpage.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -31,6 +32,7 @@ class AdminPainelFlutter extends StatelessWidget {
       //home desabilitado para usar o routes.  
      // home: const UserList(),
         routes: {
+          AppRoutes.LOGIN:(context) => const LoginPage(),
           AppRoutes.HOME:(context) => const UserList(),
           AppRoutes.USER_FORM:(context) => const UserForm()
      //     AppRoutes.USER_DETAILS: (_) => UserDetails(),
@@ -39,17 +41,4 @@ class AdminPainelFlutter extends StatelessWidget {
     );
   }
 }
-//------SOBRE O CRUD -------
-//verificar a necessidade das rotas, 
-//se não ficar legal, só retirar e usar o modo normal de navegação.
-//--------------------------
-
-// verificar video de conexão com real time DB
-// se não der certo, verificar com FireStore DB
-//Se não funcionar, usa o Firebase apenas para loggin e procura outro backend pra fazer
-
-//------SOBRE O LOGGIN PAGE -------
-//retirar o change notifier e deixar nativo para funcionar como era antes.
-//no caso, para ter o login page com firebase funcionadl e ignorar tudo da pasta CRUD
-//--------------------------------
 
