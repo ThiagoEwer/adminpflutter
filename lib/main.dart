@@ -17,11 +17,9 @@ Future<void> main() async {
 class AdminPainelFlutter extends StatelessWidget {
   const AdminPainelFlutter({super.key});
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     //o material está envolvido com o Provider Users, para atualizar todo o material.
-    // se não funcionar, colocar o Provider apenas no APP raiz após o login, no caso, o PainelGeral.
     return ChangeNotifierProvider(
       create: (context) => Users(),
       child: MaterialApp(

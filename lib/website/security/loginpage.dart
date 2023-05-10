@@ -103,7 +103,7 @@ class LoginPageState extends State<LoginPage> {
                           crossAxisAlignment: CrossAxisAlignment.stretch,
                           children: [
                             Container(
-                              padding: EdgeInsets.only(bottom: 25,top: 15),
+                              padding: const EdgeInsets.only(bottom: 25,top: 15),
                               child: Text(
                                 'Painel Gestor -  APIs',
                                 style: TextStyle(

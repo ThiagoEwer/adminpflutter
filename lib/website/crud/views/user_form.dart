@@ -76,7 +76,9 @@ class _UserFormState extends State<UserForm> {
         ],
       ),
       body: _isLoading
-          ? const Center(child: CircularProgressIndicator(),)
+          ? const Center(
+              child: CircularProgressIndicator(),
+            )
           : Padding(
               padding: const EdgeInsets.all(15),
               child: Form(
@@ -108,6 +110,7 @@ class _UserFormState extends State<UserForm> {
                           onSaved: (value) => _formData['empresa'] = value!),
                       TextFormField(
                           initialValue: _formData['avatarUrl'],
+
                           decoration:
                               const InputDecoration(labelText: 'URL Avatar'),
                           onSaved: (value) => _formData['avatarUrl'] = value!),

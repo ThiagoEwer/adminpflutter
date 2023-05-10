@@ -27,7 +27,8 @@ class Usertile extends StatelessWidget {
         width: 120,
         child: Row(children: [
           IconButton(
-              onPressed: () {},
+              onPressed: () {
+              },
               icon: const Icon(
                 Icons.remove_red_eye,
                 color: Colors.blue,
@@ -55,13 +56,14 @@ class Usertile extends StatelessWidget {
                                 onPressed: () {
                                   //fecha a tela e volta pra anterior.
                                   Navigator.of(context).pop();
-                                }, child: const Text('Não')),
+                                },
+                                child: const Text('Não')),
                             ElevatedButton(
                                 onPressed: () {
                                   //chama o provider para apagar o registro
                                   Provider.of<Users>(context, listen: false)
                                       .remove(user);
-                                  // e volta para a tela anterior.    
+                                  // e volta para a tela anterior.
                                   Navigator.of(context).pop();
                                 },
                                 child: const Text('Sim')),
@@ -77,4 +79,3 @@ class Usertile extends StatelessWidget {
     );
   }
 }
-
